@@ -8,15 +8,12 @@ Group:		Libraries
 Source0:	http://www.vips.ecs.soton.ac.uk/%{name}-7.10/%{name}-%{version}.tar.gz
 # Source0-md5:	6c0bd95710096686b57878167c483298
 URL:		http://www.vips.ecs.soton.ac.uk/
-BuildRequires:	ImageMagick-devel
+BuildRequires:	ImageMagick-devel >= 5.0.0
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	bzip2-devel
-BuildRequires:	expat-devel
-BuildRequires:	fftw3-devel
-BuildRequires:	fontconfig-devel
-BuildRequires:	freetype-devel
-BuildRequires:	glib2-devel
+BuildRequires:	fftw3-devel >= 3.0.0
+BuildRequires:	glib2-devel >= 2.0.0
 BuildRequires:	imlib-devel
 BuildRequires:	lcms-devel
 BuildRequires:	libjpeg-devel
@@ -27,6 +24,7 @@ BuildRequires:	libtiff-devel
 BuildRequires:	libtool
 BuildRequires:	libxml2-devel
 BuildRequires:	pango-devel
+BuildRequires:	pkgconfig
 BuildRequires:	zlib-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
