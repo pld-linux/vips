@@ -15,6 +15,7 @@ BuildRequires:	bzip2-devel
 BuildRequires:	fftw3-devel >= 3.0.0
 BuildRequires:	glib2-devel >= 2.0.0
 BuildRequires:	imlib-devel
+BuildRequires:	intltool
 BuildRequires:	lcms-devel
 BuildRequires:	libjpeg-devel
 BuildRequires:	libltdl-devel
