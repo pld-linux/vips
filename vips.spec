@@ -1,19 +1,19 @@
 Summary:	An image processing library
 Summary(pl):	Biblioteka przetwarzania obrazów
 Name:		vips
-Version:	7.10.7
+Version:	7.10.8
 Release:	1
 License:	LGPL
 Group:		Libraries
 Source0:	http://www.vips.ecs.soton.ac.uk/%{name}-7.10/%{name}-%{version}.tar.gz
-# Source0-md5:	2460c602430b4b1d618c971ff93edd16
+# Source0-md5:	1cb7380fc7e20fdab46928c7f212942a
 URL:		http://www.vips.ecs.soton.ac.uk/
 BuildRequires:	ImageMagick-devel >= 5.0.0
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	bzip2-devel
 BuildRequires:	fftw3-devel >= 3.0.0
-BuildRequires:	glib2-devel >= 2.0.0
+BuildRequires:	glib2-devel >= 2.4.0
 BuildRequires:	imlib-devel
 BuildRequires:	intltool
 BuildRequires:	lcms-devel
