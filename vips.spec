@@ -39,9 +39,9 @@ several user interfaces built on top of VIPS: for example "nip".
 
 %description -l pl
 VIPS jest bibliotek± przetwarzania obrazów. Jest dobra dla bardzo
-du¿ych obrazów(to znaczy wiêkszych ni¿ ilo¶æ RAM w komputerze), oraz
+du¿ych obrazów (to znaczy wiêkszych ni¿ ilo¶æ RAM w komputerze), oraz
 do pracy z kolorami. Zawiera API w C++, kompletne strony pomocy man,
-interfejs lini poleceñ, automatyczne w±tkowanie i bazê danych
+interfejs linii poleceñ, automatyczne w±tkowanie i bazê danych
 operacji. Jest kilka interfejsów u¿ytkownika zbudowanych na podstawie
 VIPS, na przyk³ad "nip".
 
@@ -73,8 +73,6 @@ Statyczna biblioteka vips.
 %setup -q
 
 %build
-# if ac/am/lt/* rebuilding is necessary, do it in this order and add
-# appropriate BuildRequires
 %{__libtoolize}
 %{__aclocal}
 %{__autoconf}
@@ -85,8 +83,6 @@ Statyczna biblioteka vips.
 
 %install
 rm -rf $RPM_BUILD_ROOT
-# create directories if necessary
-#install -d $RPM_BUILD_ROOT
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -110,8 +106,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/lib*.so
 %doc doc/html/cppguide doc/html/libguide
+%attr(755,root,root) %{_libdir}/lib*.so
 %{_libdir}/lib*.la
 %{_includedir}/%{name}
 %{_pkgconfigdir}/*.pc
