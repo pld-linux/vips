@@ -5,7 +5,7 @@ Version:	7.10.6
 Release:	1
 License:	LGPL
 Group:		Libraries
-Source0:	http://www.vips.ecs.soton.ac.uk/%{name}-%(echo %{version} |cut -f 1-2 -d .)/%{name}-%{version}.tar.gz
+Source0:	http://www.vips.ecs.soton.ac.uk/%{name}-7.10/%{name}-%{version}.tar.gz
 # Source0-md5:	6c0bd95710096686b57878167c483298
 URL:		http://www.vips.ecs.soton.ac.uk/
 BuildRequires:	ImageMagick-devel
