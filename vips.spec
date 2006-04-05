@@ -2,7 +2,7 @@ Summary:	An image processing library
 Summary(pl):	Biblioteka przetwarzania obrazów
 Name:		vips
 Version:	7.10.10
-Release:	2
+Release:	3
 License:	LGPL
 Group:		Libraries
 Source0:	http://www.vips.ecs.soton.ac.uk/%{name}-7.10/%{name}-%{version}.tar.gz
