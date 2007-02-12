@@ -1,5 +1,5 @@
 Summary:	An image processing library
-Summary(pl.UTF-8):   Biblioteka przetwarzania obrazów
+Summary(pl.UTF-8):	Biblioteka przetwarzania obrazów
 Name:		vips
 Version:	7.10.10
 Release:	3
@@ -46,7 +46,7 @@ VIPS, na przykład "nip".
 
 %package devel
 Summary:	Header files for vips library
-Summary(pl.UTF-8):   Pliki nagłówkowe biblioteki vips
+Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki vips
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 
@@ -58,7 +58,7 @@ Pliki nagłówkowe biblioteki vips.
 
 %package static
 Summary:	Static vips library
-Summary(pl.UTF-8):   Statyczna biblioteka vips
+Summary(pl.UTF-8):	Statyczna biblioteka vips
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 
