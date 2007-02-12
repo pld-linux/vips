@@ -1,5 +1,5 @@
 Summary:	An image processing library
-Summary(pl):	Biblioteka przetwarzania obrazów
+Summary(pl.UTF-8):   Biblioteka przetwarzania obrazÃ³w
 Name:		vips
 Version:	7.10.10
 Release:	3
@@ -36,36 +36,36 @@ with colour. It includes a C++ API, complete man pages, a command-line
 interface, automatic threading and an operation database. There are
 several user interfaces built on top of VIPS: for example "nip".
 
-%description -l pl
-VIPS jest bibliotek± przetwarzania obrazów. Jest dobra dla bardzo
-du¿ych obrazów (to znaczy wiêkszych ni¿ ilo¶æ RAM w komputerze), oraz
+%description -l pl.UTF-8
+VIPS jest bibliotekÄ… przetwarzania obrazÃ³w. Jest dobra dla bardzo
+duÅ¼ych obrazÃ³w (to znaczy wiÄ™kszych niÅ¼ iloÅ›Ä‡ RAM w komputerze), oraz
 do pracy z kolorami. Zawiera API w C++, kompletne strony pomocy man,
-interfejs linii poleceñ, automatyczne w±tkowanie i bazê danych
-operacji. Jest kilka interfejsów u¿ytkownika zbudowanych na podstawie
-VIPS, na przyk³ad "nip".
+interfejs linii poleceÅ„, automatyczne wÄ…tkowanie i bazÄ™ danych
+operacji. Jest kilka interfejsÃ³w uÅ¼ytkownika zbudowanych na podstawie
+VIPS, na przykÅ‚ad "nip".
 
 %package devel
 Summary:	Header files for vips library
-Summary(pl):	Pliki nag³ówkowe biblioteki vips
+Summary(pl.UTF-8):   Pliki nagÅ‚Ã³wkowe biblioteki vips
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 
 %description devel
 Header files for vips library.
 
-%description devel -l pl
-Pliki nag³ówkowe biblioteki vips.
+%description devel -l pl.UTF-8
+Pliki nagÅ‚Ã³wkowe biblioteki vips.
 
 %package static
 Summary:	Static vips library
-Summary(pl):	Statyczna biblioteka vips
+Summary(pl.UTF-8):   Statyczna biblioteka vips
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 
 %description static
 Static vips library.
 
-%description static -l pl
+%description static -l pl.UTF-8
 Statyczna biblioteka vips.
 
 %prep
