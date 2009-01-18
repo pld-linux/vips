@@ -1,12 +1,12 @@
 Summary:	An image processing library
 Summary(pl.UTF-8):	Biblioteka przetwarzania obrazów
 Name:		vips
-Version:	7.10.10
-Release:	3
+Version:	7.16.4
+Release:	1
 License:	LGPL
 Group:		Libraries
-Source0:	http://www.vips.ecs.soton.ac.uk/%{name}-7.10/%{name}-%{version}.tar.gz
-# Source0-md5:	5fa724406ff4e9ca9839d5f51bd391ad
+Source0:	http://www.vips.ecs.soton.ac.uk/supported/7.16/%{name}-%{version}.tar.gz
+# Source0-md5:	7aae3e3467d58c6c06979a10ec4f1624
 URL:		http://www.vips.ecs.soton.ac.uk/
 BuildRequires:	ImageMagick-devel >= 1:6.2.4.0
 BuildRequires:	autoconf
@@ -88,30 +88,40 @@ rm -rf $RPM_BUILD_ROOT
 
 rm -rf $RPM_BUILD_ROOT%{_datadir}/doc/%{name}
 
+# Remove *.py files. We don't package them.
+find $RPM_BUILD_ROOT%{py_sitedir}/%{name} -type f -name '*.py' -print0 | xargs -0 rm -f
+find $RPM_BUILD_ROOT%{py_sitedir}/vipsCC -type f -name '*.py' -print0 | xargs -0 rm -f
+
+%find_lang vips7
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %post	-p /sbin/ldconfig
 %postun	-p /sbin/ldconfig
 
-%files
+%files -f vips7.lang
 %defattr(644,root,root,755)
-%doc AUTHORS ChangeLog NEWS README THANKS TODO
-%doc doc/html/refguide doc/html/appguide
+%doc AUTHORS ChangeLog NEWS README THANKS TODO doc/pdf/vipsmanual.pdf
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_libdir}/lib*.so.*.*.*
+%attr(755,root,root) %{_libdir}/lib*.so.15
 %{_datadir}/%{name}
 %{_mandir}/man1/*
 
 %files devel
 %defattr(644,root,root,755)
-%doc doc/html/cppguide doc/html/libguide
+%dir %{py_sitedir}/vipsCC
 %attr(755,root,root) %{_libdir}/lib*.so
 %{_libdir}/lib*.la
 %{_includedir}/%{name}
 %{_pkgconfigdir}/*.pc
+%{py_sitedir}/vipsCC/*.py[co]
+%{py_sitedir}/vipsCC/*.la
+%{py_sitedir}/vipsCC/*.so
 %{_mandir}/man3/*
 
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/lib*.a
+%{py_sitedir}/vipsCC/*.a
