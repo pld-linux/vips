@@ -1,13 +1,17 @@
-Summary:	An image processing library
+# TODO:
+# - split -libs (-n libvips)
+# - python package (-n python-vipsCC)
+# - gir stuff belongs to what package?
+Summary:	A fast image processing library with low memory needs
 Summary(pl.UTF-8):	Biblioteka przetwarzania obrazów
 Name:		vips
-Version:	7.16.4
+Version:	8.5.9
 Release:	1
 License:	LGPL
 Group:		Libraries
-Source0:	http://www.vips.ecs.soton.ac.uk/supported/7.16/%{name}-%{version}.tar.gz
-# Source0-md5:	7aae3e3467d58c6c06979a10ec4f1624
-URL:		http://www.vips.ecs.soton.ac.uk/
+Source0:	https://github.com/jcupitt/libvips/releases/download/v%{version}/%{name}-%{version}.tar.gz
+# Source0-md5:	b8639ec0b05dfa17deca50007895963a
+URL:		http://jcupitt.github.io/libvips/
 BuildRequires:	ImageMagick-devel >= 1:6.2.4.0
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -26,15 +30,26 @@ BuildRequires:	libtool
 BuildRequires:	libxml2-devel
 BuildRequires:	pango-devel
 BuildRequires:	pkgconfig
+BuildRequires:	rpm-pythonprov
+BuildRequires:	rpmbuild(find_lang) >= 1.32
+BuildRequires:	rpmbuild(macros) >= 1.714
 BuildRequires:	zlib-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
-VIPS is an image processing library. It is good for very large images
-(ie. larger than the amount of RAM in your machine), and for working
-with colour. It includes a C++ API, complete man pages, a command-line
-interface, automatic threading and an operation database. There are
-several user interfaces built on top of VIPS: for example "nip".
+libvips is a demand-driven, horizontally threaded image processing
+library. Compared to similar libraries, libvips runs quickly and uses
+little memory.
+
+It has around 300 operations covering arithmetic, histograms,
+convolution, morphological operations, frequency filtering, colour,
+resampling, statistics and others. It supports a large range of
+numeric formats, from 8-bit int to 128-bit complex. Images can have
+any number of bands. It supports a good range of image formats,
+including JPEG, TIFF, OME-TIFF, PNG, WebP, FITS, Matlab, OpenEXR, PDF,
+SVG, HDR, PPM, CSV, GIF, Analyze, DeepZoom, and OpenSlide. It can also
+load images via ImageMagick or GraphicsMagick, letting it load formats
+like DICOM.
 
 %description -l pl.UTF-8
 VIPS jest biblioteką przetwarzania obrazów. Jest dobra dla bardzo
@@ -86,13 +101,17 @@ rm -rf $RPM_BUILD_ROOT
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-rm -rf $RPM_BUILD_ROOT%{_datadir}/doc/%{name}
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/libvips-cpp.la
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/libvips.la
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/libvipsCC.la
+%{__rm} $RPM_BUILD_ROOT%{py_sitedir}/vipsCC/*.la
+%{__rm} $RPM_BUILD_ROOT%{py_sitedir}/vipsCC/*.a
 
-# Remove *.py files. We don't package them.
-find $RPM_BUILD_ROOT%{py_sitedir}/%{name} -type f -name '*.py' -print0 | xargs -0 rm -f
-find $RPM_BUILD_ROOT%{py_sitedir}/vipsCC -type f -name '*.py' -print0 | xargs -0 rm -f
+rm -r $RPM_BUILD_ROOT%{_datadir}/gtk-doc/html/libvips
 
-%find_lang vips7
+%py_postclean
+
+%find_lang vips8.5 -o %{name}.lang
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -100,28 +119,59 @@ rm -rf $RPM_BUILD_ROOT
 %post	-p /sbin/ldconfig
 %postun	-p /sbin/ldconfig
 
-%files -f vips7.lang
+%files -f %{name}.lang
 %defattr(644,root,root,755)
-%doc AUTHORS ChangeLog NEWS README THANKS TODO doc/pdf/vipsmanual.pdf
-%attr(755,root,root) %{_bindir}/*
-%attr(755,root,root) %{_libdir}/lib*.so.*.*.*
-%attr(755,root,root) %{_libdir}/lib*.so.15
-%{_datadir}/%{name}
-%{_mandir}/man1/*
+%defattr(644,root,root,755)
+%doc AUTHORS ChangeLog NEWS THANKS TODO
+%attr(755,root,root) %{_bindir}/batch_crop
+%attr(755,root,root) %{_bindir}/batch_image_convert
+%attr(755,root,root) %{_bindir}/batch_rubber_sheet
+%attr(755,root,root) %{_bindir}/light_correct
+%attr(755,root,root) %{_bindir}/shrink_width
+%attr(755,root,root) %{_bindir}/vips
+%attr(755,root,root) %{_bindir}/vips-8.5
+%attr(755,root,root) %{_bindir}/vipsedit
+%attr(755,root,root) %{_bindir}/vipsheader
+%attr(755,root,root) %{_bindir}/vipsprofile
+%attr(755,root,root) %{_bindir}/vipsthumbnail
+%attr(755,root,root) %{_libdir}/libvips-cpp.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libvips-cpp.so.42
+%attr(755,root,root) %{_libdir}/libvips.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libvips.so.42
+%attr(755,root,root) %{_libdir}/libvipsCC.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libvipsCC.so.42
+%{_libdir}/girepository-1.0/Vips-8.0.typelib
+%{_datadir}/gir-1.0/Vips-8.0.gir
+%{_mandir}/man1/batch_crop.1*
+%{_mandir}/man1/batch_image_convert.1*
+%{_mandir}/man1/batch_rubber_sheet.1*
+%{_mandir}/man1/light_correct.1*
+%{_mandir}/man1/vips.1*
+%{_mandir}/man1/vipsedit.1*
+%{_mandir}/man1/vipsheader.1*
+%{_mandir}/man1/vipsprofile.1*
+%{_mandir}/man1/vipsthumbnail.1*
+
+%dir %{py_sitedir}/vipsCC
+%{py_sitedir}/vipsCC/*.py[co]
+%attr(755,root,root) %{py_sitedir}/vipsCC/vdisplaymodule.so
+%attr(755,root,root) %{py_sitedir}/vipsCC/verrormodule.so
+%attr(755,root,root) %{py_sitedir}/vipsCC/vimagemodule.so
+%attr(755,root,root) %{py_sitedir}/vipsCC/vmaskmodule.so
+%{py_sitedir}/gi/overrides/Vips.py[co]
 
 %files devel
 %defattr(644,root,root,755)
-%dir %{py_sitedir}/vipsCC
-%attr(755,root,root) %{_libdir}/lib*.so
-%{_libdir}/lib*.la
-%{_includedir}/%{name}
-%{_pkgconfigdir}/*.pc
-%{py_sitedir}/vipsCC/*.py[co]
-%{py_sitedir}/vipsCC/*.la
-%{py_sitedir}/vipsCC/*.so
-%{_mandir}/man3/*
+%{_libdir}/libvips-cpp.so
+%{_libdir}/libvips.so
+%{_libdir}/libvipsCC.so
+%{_includedir}/vips
+%{_pkgconfigdir}/vips-cpp.pc
+%{_pkgconfigdir}/vips.pc
+%{_pkgconfigdir}/vipsCC.pc
 
 %files static
 %defattr(644,root,root,755)
-%{_libdir}/lib*.a
-%{py_sitedir}/vipsCC/*.a
+%{_libdir}/libvips-cpp.a
+%{_libdir}/libvips.a
+%{_libdir}/libvipsCC.a
