@@ -1,7 +1,5 @@
 # TODO:
-# - nifti?
-# - openslide >= 3.4.0
-# - pdfium as an alternative for poppler
+# - pdfium as an alternative for poppler?
 # - python3-vips
 Summary:	A fast image processing library with low memory needs
 Summary(pl.UTF-8):	Szybka biblioteka przetwarzania obrazów o małych wymaganiach pamięciowych
@@ -28,7 +26,6 @@ BuildRequires:	giflib-devel
 BuildRequires:	glib2-devel >= 1:2.48
 BuildRequires:	gobject-introspection-devel >= 1.30.0
 BuildRequires:	gtk-doc >= 1.14
-BuildRequires:	intltool
 BuildRequires:	lcms2-devel >= 2
 BuildRequires:	libexif-devel >= 0.6
 BuildRequires:	libgsf-devel >= 1.14.31
@@ -43,6 +40,8 @@ BuildRequires:	libtool
 BuildRequires:	libwebp-devel >= 0.5.0
 BuildRequires:	libxml2-devel
 BuildRequires:	matio-devel
+BuildRequires:	nifticlib-devel
+BuildRequires:	openslide-devel >= 3.4.0
 BuildRequires:	orc-devel >= 0.4.11
 BuildRequires:	pango-devel
 BuildRequires:	poppler-glib-devel >= 0.16.0
@@ -101,7 +100,8 @@ Requires:	libgsf >= 1.14.31
 Requires:	libpng >= 2:1.2.9
 Requires:	librsvg >= 2.34
 Requires:	libtiff >= 4
-Requires:	libwebp-devel >= 0.5.0
+Requires:	libwebp >= 0.5.0
+Requires:	openslide >= 3.4.0
 Requires:	orc >= 0.4.11
 Requires:	poppler-glib >= 0.16.0
 Requires:	zlib >= 0.4
@@ -155,6 +155,7 @@ Requires:	librsvg-devel >= 2.34
 Requires:	libtiff-devel >= 4
 Requires:	libwebp-devel >= 0.5.0
 Requires:	matio-devel
+Requires:	openslide-devel >= 3.4.0
 Requires:	orc-devel >= 0.4.11
 Requires:	pango-devel
 Requires:	poppler-glib-devel >= 0.16.0
