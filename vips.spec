@@ -1,16 +1,15 @@
 # TODO:
 # - pdfium as an alternative for poppler?
-# - python3-vips
 Summary:	A fast image processing library with low memory needs
 Summary(pl.UTF-8):	Szybka biblioteka przetwarzania obrazów o małych wymaganiach pamięciowych
 Name:		vips
-Version:	8.7.0
-Release:	3
+Version:	8.10.2
+Release:	1
 License:	LGPL v2+
 Group:		Libraries
 #Source0Download: https://github.com/jcupitt/libvips/releases/
 Source0:	https://github.com/jcupitt/libvips/archive/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	091fa9adbd38f880c585de1265f71a4c
+# Source0-md5:	f03d95305d639d0bedeff198b2b21123
 URL:		http://jcupitt.github.io/libvips/
 BuildRequires:	ImageMagick-devel >= 1:6.2.4.0
 BuildRequires:	OpenEXR-devel >= 1.2.2
@@ -46,8 +45,6 @@ BuildRequires:	orc-devel >= 0.4.11
 BuildRequires:	pango-devel
 BuildRequires:	poppler-glib-devel >= 0.16.0
 BuildRequires:	pkgconfig
-BuildRequires:	python-devel >= 1:2.7
-BuildRequires:	python-pygobject3-devel >= 3.13.0
 BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(find_lang) >= 1.32
 BuildRequires:	rpmbuild(macros) >= 1.714
@@ -193,47 +190,6 @@ documentation.
 Dokumentacja API biblioteki VIPS. Zawiera także trochę ogólnej
 dokumentacji projektu VIPS.
 
-%package -n libvips-cpp7
-Summary:	Deprecated C++ API for VIPS image processing library
-Summary(pl.UTF-8):	Przestarzałe API C++ do biblioteki przetwarzania obrazów VIPS
-Group:		Libraries
-Requires:	libvips = %{version}-%{release}
-
-%description -n libvips-cpp7
-Deprecated C++ API for VIPS image processing library (for VIPS 7
-compatibility).
-
-%description -n libvips-cpp7 -l pl.UTF-8
-Przestarzałe API C++ do biblioteki przetwarzania obrazów VIPS (dla
-zachowania zgodności z VIPS 7).
-
-%package -n libvips-cpp7-devel
-Summary:	Deprecated C++ API for VIPS image processing library - header files
-Summary(pl.UTF-8):	Przestarzałe API C++ do biblioteki przetwarzania obrazów VIPS - pliki nagłówkowe
-Group:		Development/Libraries
-Requires:	libvips-cpp7 = %{version}-%{release}
-Requires:	libvips-devel = %{version}-%{release}
-
-%description -n libvips-cpp7-devel
-Deprecated C++ API for VIPS image processing library - header files.
-
-%description -n libvips-cpp7-devel -l pl.UTF-8
-Przestarzałe API C++ do biblioteki przetwarzania obrazów VIPS - pliki
-nagłówkowe.
-
-%package -n libvips-cpp7-static
-Summary:	Deprecated C++ API for VIPS image processing library - static library
-Summary(pl.UTF-8):	Przestarzałe API C++ do biblioteki przetwarzania obrazów VIPS - biblioteka statyczna
-Group:		Development/Libraries
-Requires:	libvips-cpp7-devel = %{version}-%{release}
-
-%description -n libvips-cpp7-static
-Deprecated C++ API for VIPS image processing library - static library.
-
-%description -n libvips-cpp7-static -l pl.UTF-8
-Przestarzałe API C++ do biblioteki przetwarzania obrazów VIPS -
-biblioteka statyczna.
-
 %package -n libvips-cpp8
 Summary:	C++ API for VIPS 8 image processing library
 Summary(pl.UTF-8):	API C++ do biblioteki przetwarzania obrazów VIPS 8
@@ -272,36 +228,11 @@ C++ API for VIPS 8 image processing library - static library.
 API C++ do biblioteki przetwarzania obrazów VIPS 8 - biblioteka
 statyczna.
 
-%package -n python-vipsCC
-Summary:	Deprecated Python interface for VIPS image processing library
-Summary(pl.UTF-8):	Przestarzały interfejs Pythona do biblioteki przetwarzania obrazów VIPS
-Group:		Libraries/Python
-Requires:	libvips-cpp7 = %{version}-%{release}
-
-%description -n python-vipsCC
-Deprecated Python interface for VIPS image processing library (for
-VIPS 7 compatibility).
-
-%description -n python-vipsCC -l pl.UTF-8
-Przestarzały interfejs Pythona do biblioteki przetwarzania obrazów
-VIPS (dla zachowania zgodności z VIPS 7).
-
-%package -n python-vips
-Summary:	Python interface for VIPS image processing library
-Summary(pl.UTF-8):	Interfejs Pythona do biblioteki przetwarzania obrazów VIPS
-Group:		Libraries/Python
-Requires:	gobject-introspection >= 1.30.0
-Requires:	libvips = %{version}-%{release}
-Requires:	python-pygobject3 >= 3.13.0
-
-%description -n python-vips
-Python interface for VIPS image processing library.
-
-%description -n python-vips -l pl.UTF-8
-Interfejs Pythona do biblioteki przetwarzania obrazów VIPS.
-
 %prep
 %setup -q -n libvips-%{version}
+
+%{__sed} -E -i -e '1s,#!\s*/usr/bin/python(\s|$),#!%{__python}\1,' \
+      tools/vipsprofile
 
 %build
 %{__gtkdocize} --docdir doc
@@ -312,9 +243,7 @@ Interfejs Pythona do biblioteki przetwarzania obrazów VIPS.
 %{__autoheader}
 %{__automake}
 %configure \
-	--enable-cpp7 \
 	--enable-gtk-doc \
-	--enable-pyvips7 \
 	--enable-pyvips8 \
 	--with-html-dir=%{_gtkdocdir}
 %{__make}
@@ -327,24 +256,18 @@ rm -rf $RPM_BUILD_ROOT
 
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/libvips-cpp.la
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/libvips.la
-%{__rm} $RPM_BUILD_ROOT%{_libdir}/libvipsCC.la
-%{__rm} $RPM_BUILD_ROOT%{py_sitedir}/vipsCC/*.la
-%{__rm} $RPM_BUILD_ROOT%{py_sitedir}/vipsCC/*.a
 
 #rm -r $RPM_BUILD_ROOT%{_datadir}/gtk-doc/html/libvips
 
 %py_postclean
 
-%find_lang vips8.7 -o %{name}.lang
+%find_lang vips8.10 -o %{name}.lang
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %post	-n libvips -p /sbin/ldconfig
 %postun	-n libvips -p /sbin/ldconfig
-
-%post	-n libvips-cpp7 -p /sbin/ldconfig
-%postun	-n libvips-cpp7 -p /sbin/ldconfig
 
 %post	-n libvips-cpp8 -p /sbin/ldconfig
 %postun	-n libvips-cpp8 -p /sbin/ldconfig
@@ -357,7 +280,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/light_correct
 %attr(755,root,root) %{_bindir}/shrink_width
 %attr(755,root,root) %{_bindir}/vips
-%attr(755,root,root) %{_bindir}/vips-8.7
+%attr(755,root,root) %{_bindir}/vips-8.10
 %attr(755,root,root) %{_bindir}/vipsedit
 %attr(755,root,root) %{_bindir}/vipsheader
 %attr(755,root,root) %{_bindir}/vipsprofile
@@ -374,7 +297,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -n libvips
 %defattr(644,root,root,755)
-%doc AUTHORS ChangeLog NEWS README.md THANKS TODO
+%doc AUTHORS ChangeLog NEWS README.md THANKS
 %attr(755,root,root) %{_libdir}/libvips.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libvips.so.42
 %{_libdir}/girepository-1.0/Vips-8.0.typelib
@@ -389,6 +312,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/vips/buf.h
 %{_includedir}/vips/cimg_funcs.h
 %{_includedir}/vips/colour.h
+%{_includedir}/vips/connection.h
 %{_includedir}/vips/conversion.h
 %{_includedir}/vips/convolution.h
 %{_includedir}/vips/create.h
@@ -419,6 +343,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/vips/rect.h
 %{_includedir}/vips/region.h
 %{_includedir}/vips/resample.h
+%{_includedir}/vips/sbuf.h
 %{_includedir}/vips/semaphore.h
 %{_includedir}/vips/soname.h
 %{_includedir}/vips/thread.h
@@ -426,11 +351,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/vips/transform.h
 %{_includedir}/vips/type.h
 %{_includedir}/vips/util.h
+%{_includedir}/vips/VConnection8.h
 %{_includedir}/vips/vector.h
 %{_includedir}/vips/version.h
 %{_includedir}/vips/video.h
-%{_includedir}/vips/vips.h
 %{_includedir}/vips/vips7compat.h
+%{_includedir}/vips/vips.h
 %{_datadir}/gir-1.0/Vips-8.0.gir
 %{_pkgconfigdir}/vips.pc
 
@@ -441,27 +367,6 @@ rm -rf $RPM_BUILD_ROOT
 %files -n libvips-apidocs
 %defattr(644,root,root,755)
 %{_gtkdocdir}/libvips
-
-%files -n libvips-cpp7
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libvipsCC.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libvipsCC.so.42
-
-%files -n libvips-cpp7-devel
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libvipsCC.so
-%{_includedir}/vips/VDisplay.h
-%{_includedir}/vips/VError.h
-%{_includedir}/vips/VImage.h
-%{_includedir}/vips/VMask.h
-%{_includedir}/vips/vipsc++.h
-%{_includedir}/vips/vipscpp.h
-%{_includedir}/vips/vips
-%{_pkgconfigdir}/vipsCC.pc
-
-%files -n libvips-cpp7-static
-%defattr(644,root,root,755)
-%{_libdir}/libvipsCC.a
 
 %files -n libvips-cpp8
 %defattr(644,root,root,755)
@@ -481,16 +386,3 @@ rm -rf $RPM_BUILD_ROOT
 %files -n libvips-cpp8-static
 %defattr(644,root,root,755)
 %{_libdir}/libvips-cpp.a
-
-%files -n python-vipsCC
-%defattr(644,root,root,755)
-%dir %{py_sitedir}/vipsCC
-%{py_sitedir}/vipsCC/*.py[co]
-%attr(755,root,root) %{py_sitedir}/vipsCC/vdisplaymodule.so
-%attr(755,root,root) %{py_sitedir}/vipsCC/verrormodule.so
-%attr(755,root,root) %{py_sitedir}/vipsCC/vimagemodule.so
-%attr(755,root,root) %{py_sitedir}/vipsCC/vmaskmodule.so
-
-%files -n python-vips
-%defattr(644,root,root,755)
-%{py_sitedir}/gi/overrides/Vips.py[co]
