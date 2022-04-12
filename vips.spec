@@ -1,51 +1,60 @@
 # TODO:
 # - pdfium as an alternative for poppler?
+#
+# Conditional build:
+%bcond_with	libspng		# libspng for reading instead of libpng
+
 Summary:	A fast image processing library with low memory needs
-Summary(pl.UTF-8):	Szybka biblioteka przetwarzania obrazów o małych wymaganiach pamięciowych
+Summary(pl.UTF-8):	Szybka, mająca małe wymagania pamięciowe biblioteka przetwarzania obrazów
 Name:		vips
 Version:	8.11.2
-Release:	2
+Release:	3
 License:	LGPL v2+
 Group:		Libraries
-#Source0Download: https://github.com/jcupitt/libvips/releases/
+#Source0Download: https://github.com/jcupitt/libvips/tags
 Source0:	https://github.com/jcupitt/libvips/archive/v%{version}/%{name}-%{version}.tar.gz
 # Source0-md5:	79ceea4d685b1b9dc3cb1e253c81793c
 URL:		http://jcupitt.github.io/libvips/
-BuildRequires:	ImageMagick-devel >= 1:6.2.4.0
+BuildRequires:	ImageMagick-devel >= 1:7.0
 BuildRequires:	OpenEXR-devel >= 1.2.2
-BuildRequires:	autoconf >= 2.62
+BuildRequires:	autoconf >= 2.69
 BuildRequires:	automake >= 1.6
 BuildRequires:	bzip2-devel
 BuildRequires:	cairo-devel >= 1.2
 BuildRequires:	cfitsio-devel
 BuildRequires:	expat-devel >= 1.95
 BuildRequires:	fftw3-devel >= 3.0.0
+BuildRequires:	fontconfig-devel
 BuildRequires:	gettext-tools
 BuildRequires:	giflib-devel
-BuildRequires:	glib2-devel >= 1:2.48
+BuildRequires:	glib2-devel >= 1:2.62
 BuildRequires:	gobject-introspection-devel >= 1.30.0
 BuildRequires:	gtk-doc >= 1.14
 BuildRequires:	lcms2-devel >= 2
 BuildRequires:	libexif-devel >= 0.6
 BuildRequires:	libgsf-devel >= 1.14.31
+BuildRequires:	libheif-devel >= 1.7.0
 BuildRequires:	libimagequant-devel
 BuildRequires:	libjpeg-devel
+BuildRequires:	libjxl-devel >= 0.3.7
 BuildRequires:	libltdl-devel
 BuildRequires:	libpng-devel >= 2:1.2.9
-BuildRequires:	librsvg-devel >= 2.34
+BuildRequires:	librsvg-devel >= 2.40.3
+%{?with_libspng:BuildRequires:	libspng >= 0.6}
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtiff-devel >= 4
 BuildRequires:	libtool
-BuildRequires:	libwebp-devel >= 0.5.0
+BuildRequires:	libwebp-devel >= 0.6
 BuildRequires:	libxml2-devel
 BuildRequires:	matio-devel
 BuildRequires:	nifticlib-devel
+BuildRequires:	openjpeg2-devel >= 2.4
 BuildRequires:	openslide-devel >= 3.4.0
-BuildRequires:	orc-devel >= 0.4.11
-BuildRequires:	pango-devel
+BuildRequires:	orc-devel >= 0.4.31
+BuildRequires:	pango-devel >= 1:1.8
 BuildRequires:	poppler-glib-devel >= 0.16.0
 BuildRequires:	pkgconfig
-BuildRequires:	rpm-pythonprov
+BuildRequires:	rpm-build >= 4.6
 BuildRequires:	rpmbuild(find_lang) >= 1.32
 BuildRequires:	rpmbuild(macros) >= 1.714
 BuildRequires:	zlib-devel >= 0.4
@@ -88,18 +97,22 @@ Ten pakiet zawiera narzędzia oparte na bibliotece libvips.
 Summary:	VIPS image processing library
 Summary(pl.UTF-8):	Biblioteka przetwarzania obrazów VIPS
 Group:		Libraries
-Requires:	ImageMagick-libs >= 1:6.2.4.0
+Requires:	ImageMagick-libs >= 1:7.0
 Requires:	OpenEXR >= 1.2.2
 Requires:	cairo >= 1.2
-Requires:	glib2 >= 1:2.48
+Requires:	glib2 >= 1:2.62
 Requires:	libexif >= 0.6
 Requires:	libgsf >= 1.14.31
+Requires:	libheif >= 1.7.0
+Requires:	libjxl >= 0.3.7
 Requires:	libpng >= 2:1.2.9
-Requires:	librsvg >= 2.34
+Requires:	librsvg >= 2.40.3
+%{?with_libspng:Requires:	libspng >= 0.6}
 Requires:	libtiff >= 4
-Requires:	libwebp >= 0.5.0
+Requires:	libwebp >= 0.6
+Requires:	openjpeg2 >= 2.4
 Requires:	openslide >= 3.4.0
-Requires:	orc >= 0.4.11
+Requires:	orc >= 0.4.31
 Requires:	poppler-glib >= 0.16.0
 Requires:	zlib >= 0.4
 
@@ -136,25 +149,31 @@ formaty takie jak DICOM.
 Summary:	Header files for VIPS library
 Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki VIPS
 Group:		Development/Libraries
-Requires:	ImageMagick-devel >= 1:6.2.4.0
+Requires:	ImageMagick-devel >= 1:7.0
 Requires:	OpenEXR-devel >= 1.2.2
 Requires:	cairo-devel >= 1.2
 Requires:	cfitsio-devel
+Requires:	expat-devel >= 1.95
 Requires:	fftw3-devel >= 3.0.0
-Requires:	glib2-devel >= 1:2.48
+Requires:	fontconfig-devel
+Requires:	glib2-devel >= 1:2.62
 Requires:	lcms2-devel >= 2
 Requires:	libexif-devel >= 0.6
 Requires:	libgsf-devel >= 1.14.31
+Requires:	libheif-devel >= 1.7.0
 Requires:	libimagequant-devel
 Requires:	libjpeg-devel
+Requires:	libjxl-devel >= 0.3.7
 Requires:	libpng-devel >= 2:1.2.9
-Requires:	librsvg-devel >= 2.34
+Requires:	librsvg-devel >= 2.40.3
+%{?with_libspng:Requires:	libspng-devel >= 0.6}
 Requires:	libtiff-devel >= 4
-Requires:	libwebp-devel >= 0.5.0
+Requires:	libwebp-devel >= 0.6
 Requires:	matio-devel
+Requires:	openjpeg2-devel >= 2.4
 Requires:	openslide-devel >= 3.4.0
-Requires:	orc-devel >= 0.4.11
-Requires:	pango-devel
+Requires:	orc-devel >= 0.4.31
+Requires:	pango-devel >= 1:1.8
 Requires:	poppler-glib-devel >= 0.16.0
 Requires:	zlib-devel >= 0.4
 Obsoletes:	vips-devel < 8.7
@@ -181,6 +200,7 @@ Statyczna biblioteka VIPS.
 Summary:	API documentation for VIPS library
 Summary(pl.UTF-8):	Dokumentacja API biblioteki VIPS
 Group:		Documentation
+BuildArch:	noarch
 
 %description -n libvips-apidocs
 API documentation for VIPS library, together with some general VIPS
@@ -228,10 +248,23 @@ C++ API for VIPS 8 image processing library - static library.
 API C++ do biblioteki przetwarzania obrazów VIPS 8 - biblioteka
 statyczna.
 
+%package -n libvips-cpp8-apidocs
+Summary:	C++ API documentation for VIPS 8 library
+Summary(pl.UTF-8):	Dokumentacja API C++ biblioteki VIPS 8
+Group:		Documentation
+BuildArch:	noarch
+
+%description -n libvips-cpp8-apidocs
+C++ API documentation for VIPS 8 library.
+
+%description -n libvips-cpp8-apidocs -l pl.UTF-8
+Dokumentacja API C++ biblioteki VIPS 8.
+
 %prep
 %setup -q -n libvips-%{version}
 
-%{__sed} -E -i -e '1s,#!\s*/usr/bin/python(\s|$),#!%{__python}\1,' \
+# it seems to support both python2/python3, prefer the latter
+%{__sed} -i -e '1s,/usr/bin/python$,%{__python3},' \
       tools/vipsprofile
 
 %build
@@ -244,8 +277,8 @@ statyczna.
 %{__automake}
 %configure \
 	--enable-gtk-doc \
-	--enable-pyvips8 \
-	--with-html-dir=%{_gtkdocdir}
+	--with-html-dir=%{_gtkdocdir} \
+	%{!?with_libspng:--without-libspng}
 %{__make}
 
 %install
@@ -257,9 +290,8 @@ rm -rf $RPM_BUILD_ROOT
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/libvips-cpp.la
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/libvips.la
 
-#rm -r $RPM_BUILD_ROOT%{_datadir}/gtk-doc/html/libvips
-
-%py_postclean
+# packaged as %doc in libvips-cpp8-apidocs
+%{__rm} -r $RPM_BUILD_ROOT%{_docdir}/vips/html
 
 %find_lang vips8.11 -o %{name}.lang
 
@@ -384,3 +416,7 @@ rm -rf $RPM_BUILD_ROOT
 %files -n libvips-cpp8-static
 %defattr(644,root,root,755)
 %{_libdir}/libvips-cpp.a
+
+%files -n libvips-cpp8-apidocs
+%defattr(644,root,root,755)
+%doc cplusplus/html/{search,*.css,*.html,*.js,*.png}
