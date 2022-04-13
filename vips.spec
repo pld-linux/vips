@@ -131,7 +131,7 @@ SVG, HDR, PPM, CSV, GIF, Analyze, DeepZoom, and OpenSlide. It can also
 load images via ImageMagick or GraphicsMagick, letting it load formats
 like DICOM.
 
-%description -n libvips
+%description -n libvips -l pl.UTF-8
 VIPS jest wielowątkową biblioteką przetwarzania obrazów. W porównaniu
 do innych, działa szybko i zużywa niewiele pamięci.
 
