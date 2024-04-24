@@ -7,14 +7,14 @@
 Summary:	A fast image processing library with low memory needs
 Summary(pl.UTF-8):	Szybka, mająca małe wymagania pamięciowe biblioteka przetwarzania obrazów
 Name:		vips
-Version:	8.11.2
-Release:	5
+Version:	8.11.4
+Release:	1
 License:	LGPL v2+
 Group:		Libraries
-#Source0Download: https://github.com/jcupitt/libvips/tags
-Source0:	https://github.com/jcupitt/libvips/archive/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	79ceea4d685b1b9dc3cb1e253c81793c
-URL:		http://jcupitt.github.io/libvips/
+#Source0Download: https://github.com/libvips/libvips/tags
+Source0:	https://github.com/libvips/libvips/archive/v%{version}/%{name}-%{version}.tar.gz
+# Source0-md5:	7c037ab8162f92b04900811577dfdf72
+URL:		https://www.libvips.org/
 BuildRequires:	ImageMagick-devel >= 1:7.0
 BuildRequires:	OpenEXR-devel >= 1.2.2
 BuildRequires:	autoconf >= 2.69
