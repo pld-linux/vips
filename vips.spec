@@ -1,5 +1,5 @@
 # TODO:
-# - pdfium as an alternative for poppler?
+# - pdfium>=4200 as an alternative for poppler?
 #
 # Conditional build:
 %bcond_with	libspng		# libspng for reading instead of libpng
@@ -7,13 +7,13 @@
 Summary:	A fast image processing library with low memory needs
 Summary(pl.UTF-8):	Szybka, mająca małe wymagania pamięciowe biblioteka przetwarzania obrazów
 Name:		vips
-Version:	8.11.4
+Version:	8.12.2
 Release:	1
 License:	LGPL v2+
 Group:		Libraries
 #Source0Download: https://github.com/libvips/libvips/tags
-Source0:	https://github.com/libvips/libvips/archive/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	7c037ab8162f92b04900811577dfdf72
+Source0:	https://github.com/libvips/libvips/archive/v%{version}/libvips-%{version}.tar.gz
+# Source0-md5:	db209262e6c62952603b6ed4149c1e98
 URL:		https://www.libvips.org/
 BuildRequires:	ImageMagick-devel >= 1:7.0
 BuildRequires:	OpenEXR-devel >= 1.2.2
@@ -22,6 +22,8 @@ BuildRequires:	automake >= 1.6
 BuildRequires:	bzip2-devel
 BuildRequires:	cairo-devel >= 1.2
 BuildRequires:	cfitsio-devel
+BuildRequires:	cgif-devel
+BuildRequires:	doxygen
 BuildRequires:	expat-devel >= 1.95
 BuildRequires:	fftw3-devel >= 3.0.0
 BuildRequires:	fontconfig-devel
@@ -36,10 +38,10 @@ BuildRequires:	libgsf-devel >= 1.14.31
 BuildRequires:	libheif-devel >= 1.7.0
 BuildRequires:	libimagequant-devel
 BuildRequires:	libjpeg-devel
-BuildRequires:	libjxl-devel >= 0.3.7
+BuildRequires:	libjxl-devel >= 0.5
 BuildRequires:	libltdl-devel
 BuildRequires:	libpng-devel >= 2:1.2.9
-BuildRequires:	librsvg-devel >= 2.40.3
+BuildRequires:	librsvg-devel >= 2.46
 %{?with_libspng:BuildRequires:	libspng >= 0.6}
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtiff-devel >= 4
@@ -104,9 +106,9 @@ Requires:	glib2 >= 1:2.62
 Requires:	libexif >= 0.6
 Requires:	libgsf >= 1.14.31
 Requires:	libheif >= 1.7.0
-Requires:	libjxl >= 0.3.7
+Requires:	libjxl >= 0.5
 Requires:	libpng >= 2:1.2.9
-Requires:	librsvg >= 2.40.3
+Requires:	librsvg >= 2.46
 %{?with_libspng:Requires:	libspng >= 0.6}
 Requires:	libtiff >= 4
 Requires:	libwebp >= 0.6
@@ -163,9 +165,9 @@ Requires:	libgsf-devel >= 1.14.31
 Requires:	libheif-devel >= 1.7.0
 Requires:	libimagequant-devel
 Requires:	libjpeg-devel
-Requires:	libjxl-devel >= 0.3.7
+Requires:	libjxl-devel >= 0.5
 Requires:	libpng-devel >= 2:1.2.9
-Requires:	librsvg-devel >= 2.40.3
+Requires:	librsvg-devel >= 2.46
 %{?with_libspng:Requires:	libspng-devel >= 0.6}
 Requires:	libtiff-devel >= 4
 Requires:	libwebp-devel >= 0.6
@@ -276,6 +278,7 @@ Dokumentacja API C++ biblioteki VIPS 8.
 %{__autoheader}
 %{__automake}
 %configure \
+	--enable-doxygen \
 	--enable-gtk-doc \
 	--with-html-dir=%{_gtkdocdir} \
 	%{!?with_libspng:--without-libspng}
@@ -293,7 +296,7 @@ rm -rf $RPM_BUILD_ROOT
 # packaged as %doc in libvips-cpp8-apidocs
 %{__rm} -r $RPM_BUILD_ROOT%{_docdir}/vips/html
 
-%find_lang vips8.11 -o %{name}.lang
+%find_lang vips8.12 -o %{name}.lang
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -312,7 +315,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/light_correct
 %attr(755,root,root) %{_bindir}/shrink_width
 %attr(755,root,root) %{_bindir}/vips
-%attr(755,root,root) %{_bindir}/vips-8.11
+%attr(755,root,root) %{_bindir}/vips-8.12
 %attr(755,root,root) %{_bindir}/vipsedit
 %attr(755,root,root) %{_bindir}/vipsheader
 %attr(755,root,root) %{_bindir}/vipsprofile
