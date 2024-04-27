@@ -3,17 +3,18 @@
 #
 # Conditional build:
 %bcond_with	libspng		# libspng for PNG read/write support nstead of libpng
+%bcond_with	pandoc		# regenerate docbook from markdown using pandoc
 
 Summary:	A fast image processing library with low memory needs
 Summary(pl.UTF-8):	Szybka, mająca małe wymagania pamięciowe biblioteka przetwarzania obrazów
 Name:		vips
-Version:	8.14.5
+Version:	8.15.2
 Release:	1
 License:	LGPL v2+
 Group:		Libraries
 #Source0Download: https://github.com/libvips/libvips/tags
 Source0:	https://github.com/libvips/libvips/archive/v%{version}/libvips-%{version}.tar.gz
-# Source0-md5:	a1d62eb12b50d5e2ed94c95d6322f247
+# Source0-md5:	978b59d2ac8114cf1ded13634664f077
 URL:		https://www.libvips.org/
 BuildRequires:	ImageMagick-devel >= 1:7.0
 BuildRequires:	OpenEXR-devel >= 1.2.2
@@ -30,14 +31,16 @@ BuildRequires:	giflib-devel
 BuildRequires:	glib2-devel >= 1:2.62
 BuildRequires:	gobject-introspection-devel >= 1.30.0
 BuildRequires:	gtk-doc >= 1.14
+# or orc-devel >= 0.4.31 (highway is preferred)
+BuildRequires:	highway-devel >= 1.0.5
 BuildRequires:	lcms2-devel >= 2
 BuildRequires:	libexif-devel >= 0.6.23
 BuildRequires:	libgsf-devel >= 1.14.31
 BuildRequires:	libheif-devel >= 1.7.0
-# or quantizr
+# or quantizr (libimagequant is preferred)
 BuildRequires:	libimagequant-devel
 BuildRequires:	libjpeg-devel
-BuildRequires:	libjxl-devel >= 0.7
+BuildRequires:	libjxl-devel >= 0.9
 BuildRequires:	libltdl-devel
 %{!?with_libspng:BuildRequires:	libpng-devel >= 2:1.2.9}
 BuildRequires:	librsvg-devel >= 2.46
@@ -48,17 +51,18 @@ BuildRequires:	libwebp-devel >= 0.6
 BuildRequires:	libxml2-devel
 BuildRequires:	matio-devel
 BuildRequires:	meson >= 0.55
-BuildRequires:	nifticlib-devel
+BuildRequires:	nifticlib-devel >= 3.0.0
 BuildRequires:	ninja >= 1.5
 BuildRequires:	openjpeg2-devel >= 2.4
 BuildRequires:	openslide-devel >= 3.4.0
-BuildRequires:	orc-devel >= 0.4.31
+%{?with_pandoc:BuildRequires:	pandoc >= 2}
 BuildRequires:	pango-devel >= 1:1.32.6
 BuildRequires:	poppler-glib-devel >= 0.16.0
 BuildRequires:	pkgconfig
 BuildRequires:	rpm-build >= 4.6
 BuildRequires:	rpmbuild(find_lang) >= 1.32
 BuildRequires:	rpmbuild(macros) >= 1.736
+BuildRequires:	sed >= 4.0
 BuildRequires:	zlib-devel >= 0.4
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -104,10 +108,11 @@ Requires:	OpenEXR >= 1.2.2
 Requires:	cairo >= 1.2
 Requires:	cgif >= 0.2.0
 Requires:	glib2 >= 1:2.62
+Requires:	highway >= 1.0.5
 Requires:	libexif >= 0.6.23
 Requires:	libgsf >= 1.14.31
 Requires:	libheif >= 1.7.0
-Requires:	libjxl >= 0.7
+Requires:	libjxl >= 0.9
 %{!?with_libspng:Requires:	libpng >= 2:1.2.9}
 Requires:	librsvg >= 2.46
 %{?with_libspng:Requires:	libspng >= 0.7}
@@ -115,7 +120,6 @@ Requires:	libtiff >= 4.0.10
 Requires:	libwebp >= 0.6
 Requires:	openjpeg2 >= 2.4
 Requires:	openslide >= 3.4.0
-Requires:	orc >= 0.4.31
 Requires:	pango >= 1:1.32.6
 Requires:	poppler-glib >= 0.16.0
 Requires:	zlib >= 0.4
@@ -162,13 +166,14 @@ Requires:	expat-devel >= 1.95
 Requires:	fftw3-devel >= 3.0.0
 Requires:	fontconfig-devel
 Requires:	glib2-devel >= 1:2.62
+Requires:	highway-devel >= 1.0.5
 Requires:	lcms2-devel >= 2
 Requires:	libexif-devel >= 0.6.23
 Requires:	libgsf-devel >= 1.14.31
 Requires:	libheif-devel >= 1.7.0
 Requires:	libimagequant-devel
 Requires:	libjpeg-devel
-Requires:	libjxl-devel >= 0.7
+Requires:	libjxl-devel >= 0.9
 %{!?with_libspng:Requires:	libpng-devel >= 2:1.2.9}
 Requires:	librsvg-devel >= 2.46
 %{?with_libspng:Requires:	libspng-devel >= 0.7}
@@ -177,7 +182,6 @@ Requires:	libwebp-devel >= 0.6
 Requires:	matio-devel
 Requires:	openjpeg2-devel >= 2.4
 Requires:	openslide-devel >= 3.4.0
-Requires:	orc-devel >= 0.4.31
 Requires:	pango-devel >= 1:1.32.6
 Requires:	poppler-glib-devel >= 0.16.0
 Requires:	zlib-devel >= 0.4
@@ -281,9 +285,9 @@ Dokumentacja API C++ biblioteki VIPS 8.
 %prep
 %setup -q -n libvips-%{version}
 
-# it seems to support both python2/python3, prefer the latter
-%{__sed} -i -e '1s,/usr/bin/python$,%{__python3},' \
-      tools/vipsprofile
+%if %{without pandoc}
+%{__sed} -i -e "/find_program/ s/'pandoc'/'pandocnotfound'/" doc/meson.build
+%endif
 
 %build
 %meson build \
@@ -302,7 +306,7 @@ rm -rf $RPM_BUILD_ROOT
 # packaged as %doc in libvips-cpp8-apidocs
 %{__rm} -r $RPM_BUILD_ROOT%{_docdir}/vips-doc/html
 
-%find_lang vips8.14 -o %{name}.lang
+%find_lang vips8.15 -o %{name}.lang
 
 %clean
 rm -rf $RPM_BUILD_ROOT
