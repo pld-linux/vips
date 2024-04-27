@@ -7,18 +7,16 @@
 Summary:	A fast image processing library with low memory needs
 Summary(pl.UTF-8):	Szybka, mająca małe wymagania pamięciowe biblioteka przetwarzania obrazów
 Name:		vips
-Version:	8.13.3
+Version:	8.14.5
 Release:	1
 License:	LGPL v2+
 Group:		Libraries
 #Source0Download: https://github.com/libvips/libvips/tags
 Source0:	https://github.com/libvips/libvips/archive/v%{version}/libvips-%{version}.tar.gz
-# Source0-md5:	f09f25930aa27ed16e32c5a39aedfd31
+# Source0-md5:	a1d62eb12b50d5e2ed94c95d6322f247
 URL:		https://www.libvips.org/
 BuildRequires:	ImageMagick-devel >= 1:7.0
 BuildRequires:	OpenEXR-devel >= 1.2.2
-BuildRequires:	autoconf >= 2.69
-BuildRequires:	automake >= 1.6
 BuildRequires:	bzip2-devel
 BuildRequires:	cairo-devel >= 1.2
 BuildRequires:	cfitsio-devel
@@ -46,11 +44,12 @@ BuildRequires:	librsvg-devel >= 2.46
 %{?with_libspng:BuildRequires:	libspng >= 0.7}
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtiff-devel >= 4.0.10
-BuildRequires:	libtool
 BuildRequires:	libwebp-devel >= 0.6
 BuildRequires:	libxml2-devel
 BuildRequires:	matio-devel
+BuildRequires:	meson >= 0.55
 BuildRequires:	nifticlib-devel
+BuildRequires:	ninja >= 1.5
 BuildRequires:	openjpeg2-devel >= 2.4
 BuildRequires:	openslide-devel >= 3.4.0
 BuildRequires:	orc-devel >= 0.4.31
@@ -59,7 +58,7 @@ BuildRequires:	poppler-glib-devel >= 0.16.0
 BuildRequires:	pkgconfig
 BuildRequires:	rpm-build >= 4.6
 BuildRequires:	rpmbuild(find_lang) >= 1.32
-BuildRequires:	rpmbuild(macros) >= 1.714
+BuildRequires:	rpmbuild(macros) >= 1.736
 BuildRequires:	zlib-devel >= 0.4
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -202,6 +201,19 @@ Static VIPS library.
 %description -n libvips-static -l pl.UTF-8
 Statyczna biblioteka VIPS.
 
+%package -n vala-libvips
+Summary:	Vala API for VIPS library
+Summary(pl.UTF-8):	API języka Vala do biblioteki VIPS
+Group:		Development/Libraries
+Requires:	libvips-devel = %{version}-%{release}
+Requires:	vala
+
+%description -n vala-libvips
+Vala API for VIPS library.
+
+%description -n vala-libvips -l pl.UTF-8
+API języka Vala do biblioteki VIPS.
+
 %package -n libvips-apidocs
 Summary:	API documentation for VIPS library
 Summary(pl.UTF-8):	Dokumentacja API biblioteki VIPS
@@ -274,33 +286,23 @@ Dokumentacja API C++ biblioteki VIPS 8.
       tools/vipsprofile
 
 %build
-%{__gtkdocize} --docdir doc
-%{__glib_gettextize}
-%{__libtoolize}
-%{__aclocal} -I m4
-%{__autoconf}
-%{__autoheader}
-%{__automake}
-%configure \
-	--enable-doxygen \
-	--enable-gtk-doc \
-	--with-html-dir=%{_gtkdocdir} \
-	%{!?with_libspng:--without-libspng}
-%{__make}
+%meson build \
+	-Ddoxygen=true \
+	-Dgtk_doc=true \
+	%{!?with_libspng:-Dspng=disabled} \
+	-Dvapi=true
+
+%ninja_build -C build
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%{__make} install \
-	DESTDIR=$RPM_BUILD_ROOT
-
-%{__rm} $RPM_BUILD_ROOT%{_libdir}/libvips-cpp.la
-%{__rm} $RPM_BUILD_ROOT%{_libdir}/libvips.la
+%ninja_install -C build
 
 # packaged as %doc in libvips-cpp8-apidocs
-%{__rm} -r $RPM_BUILD_ROOT%{_docdir}/vips/html
+%{__rm} -r $RPM_BUILD_ROOT%{_docdir}/vips-doc/html
 
-%find_lang vips8.13 -o %{name}.lang
+%find_lang vips8.14 -o %{name}.lang
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -313,21 +315,11 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/batch_crop
-%attr(755,root,root) %{_bindir}/batch_image_convert
-%attr(755,root,root) %{_bindir}/batch_rubber_sheet
-%attr(755,root,root) %{_bindir}/light_correct
-%attr(755,root,root) %{_bindir}/shrink_width
 %attr(755,root,root) %{_bindir}/vips
-%attr(755,root,root) %{_bindir}/vips-8.13
 %attr(755,root,root) %{_bindir}/vipsedit
 %attr(755,root,root) %{_bindir}/vipsheader
 %attr(755,root,root) %{_bindir}/vipsprofile
 %attr(755,root,root) %{_bindir}/vipsthumbnail
-%{_mandir}/man1/batch_crop.1*
-%{_mandir}/man1/batch_image_convert.1*
-%{_mandir}/man1/batch_rubber_sheet.1*
-%{_mandir}/man1/light_correct.1*
 %{_mandir}/man1/vips.1*
 %{_mandir}/man1/vipsedit.1*
 %{_mandir}/man1/vipsheader.1*
@@ -336,7 +328,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -n libvips
 %defattr(644,root,root,755)
-%doc AUTHORS ChangeLog NEWS README.md THANKS
+%doc ChangeLog README.md
 %attr(755,root,root) %{_libdir}/libvips.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libvips.so.42
 %{_libdir}/girepository-1.0/Vips-8.0.typelib
@@ -400,6 +392,11 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %{_libdir}/libvips.a
 
+%files -n vala-libvips
+%defattr(644,root,root,755)
+%{_datadir}/vala/vapi/vips.deps
+%{_datadir}/vala/vapi/vips.vapi
+
 %files -n libvips-apidocs
 %defattr(644,root,root,755)
 %{_gtkdocdir}/libvips
@@ -426,4 +423,4 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -n libvips-cpp8-apidocs
 %defattr(644,root,root,755)
-%doc cplusplus/html/{search,*.css,*.html,*.js,*.png}
+%doc build/cplusplus/html/{search,*.css,*.html,*.js,*.png}
