@@ -290,18 +290,18 @@ Dokumentacja API C++ biblioteki VIPS 8.
 %endif
 
 %build
-%meson build \
+%meson \
 	-Ddoxygen=true \
 	-Dgtk_doc=true \
 	%{!?with_libspng:-Dspng=disabled} \
 	-Dvapi=true
 
-%ninja_build -C build
+%meson_build
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%ninja_install -C build
+%meson_install
 
 # packaged as %doc in libvips-cpp8-apidocs
 %{__rm} -r $RPM_BUILD_ROOT%{_docdir}/vips-doc/html
