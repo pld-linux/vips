@@ -9,7 +9,7 @@ Summary:	A fast image processing library with low memory needs
 Summary(pl.UTF-8):	Szybka, mająca małe wymagania pamięciowe biblioteka przetwarzania obrazów
 Name:		vips
 Version:	8.15.2
-Release:	2
+Release:	3
 License:	LGPL v2+
 Group:		Libraries
 #Source0Download: https://github.com/libvips/libvips/tags
