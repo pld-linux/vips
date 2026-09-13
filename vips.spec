@@ -8,13 +8,13 @@
 Summary:	A fast image processing library with low memory needs
 Summary(pl.UTF-8):	Szybka, mająca małe wymagania pamięciowe biblioteka przetwarzania obrazów
 Name:		vips
-Version:	8.15.2
-Release:	5
+Version:	8.18.5
+Release:	1
 License:	LGPL v2+
 Group:		Libraries
 #Source0Download: https://github.com/libvips/libvips/tags
 Source0:	https://github.com/libvips/libvips/archive/v%{version}/libvips-%{version}.tar.gz
-# Source0-md5:	978b59d2ac8114cf1ded13634664f077
+# Source0-md5:	b226ab01cecd398dce08986b14f69dca
 URL:		https://www.libvips.org/
 BuildRequires:	ImageMagick-devel >= 1:7.0
 BuildRequires:	OpenEXR-devel >= 1.2.2
@@ -27,13 +27,14 @@ BuildRequires:	expat-devel >= 1.95
 BuildRequires:	fftw3-devel >= 3.0.0
 BuildRequires:	fontconfig-devel
 BuildRequires:	gettext-tools
+BuildRequires:	gi-docgen
 BuildRequires:	giflib-devel
 BuildRequires:	glib2-devel >= 1:2.62
 BuildRequires:	gobject-introspection-devel >= 1.30.0
-BuildRequires:	gtk-doc >= 1.14
 # or orc-devel >= 0.4.31 (highway is preferred)
 BuildRequires:	highway-devel >= 1.0.5
 BuildRequires:	lcms2-devel >= 2
+BuildRequires:	libarchive-devel >= 3.0.0
 BuildRequires:	libexif-devel >= 0.6.23
 BuildRequires:	libgsf-devel >= 1.14.31
 BuildRequires:	libheif-devel >= 1.7.0
@@ -45,8 +46,9 @@ BuildRequires:	libltdl-devel
 %{!?with_libspng:BuildRequires:	libpng-devel >= 2:1.2.9}
 BuildRequires:	librsvg-devel >= 2.46
 %{?with_libspng:BuildRequires:	libspng >= 0.7}
-BuildRequires:	libstdc++-devel
-BuildRequires:	libtiff-devel >= 4.0.10
+BuildRequires:	libstdc++-devel >= 6:5
+BuildRequires:	libtiff-devel >= 4.7.0
+BuildRequires:	libultrahdr-devel
 BuildRequires:	libwebp-devel >= 0.6
 BuildRequires:	libxml2-devel
 BuildRequires:	matio-devel
@@ -65,6 +67,8 @@ BuildRequires:	rpmbuild(macros) >= 2.042
 BuildRequires:	sed >= 4.0
 BuildRequires:	zlib-devel >= 0.4
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+
+%define		lib_ver		8.18
 
 %description
 libvips is a demand-driven, horizontally threaded image processing
@@ -116,7 +120,7 @@ Requires:	libjxl >= 0.9
 %{!?with_libspng:Requires:	libpng >= 2:1.2.9}
 Requires:	librsvg >= 2.46
 %{?with_libspng:Requires:	libspng >= 0.7}
-Requires:	libtiff >= 4.0.10
+Requires:	libtiff >= 4.7.0
 Requires:	libwebp >= 0.6
 Requires:	openjpeg2 >= 2.4
 Requires:	openslide >= 3.4.0
@@ -177,7 +181,7 @@ Requires:	libjxl-devel >= 0.9
 %{!?with_libspng:Requires:	libpng-devel >= 2:1.2.9}
 Requires:	librsvg-devel >= 2.46
 %{?with_libspng:Requires:	libspng-devel >= 0.7}
-Requires:	libtiff-devel >= 4.0.10
+Requires:	libtiff-devel >= 4.7.0
 Requires:	libwebp-devel >= 0.6
 Requires:	matio-devel
 Requires:	openjpeg2-devel >= 2.4
@@ -291,10 +295,45 @@ Dokumentacja API C++ biblioteki VIPS 8.
 
 %build
 %meson \
-	-Ddoxygen=true \
-	-Dgtk_doc=true \
-	%{!?with_libspng:-Dspng=disabled} \
-	-Dvapi=true
+	-Darchive=enabled \
+	-Dcfitsio=enabled \
+	-Dcgif=enabled \
+	-Dcpp-docs=true \
+	-Ddocs=true \
+	-Dexif=enabled \
+	-Dfftw=enabled \
+	-Dfontconfig=enabled \
+	-Dheif=enabled \
+	-Dheif-module=enabled \
+	-Dhighway=enabled \
+	-Dimagequant=enabled \
+	-Dintrospection=enabled \
+	-Djpeg=enabled \
+	-Djpeg-xl=enabled \
+	-Djpeg-xl-module=enabled \
+	-Dlcms=enabled \
+	-Dmagick=enabled \
+	-Dmagick-module=enabled \
+	-Dmatio=enabled \
+	-Dnifti=enabled \
+	-Dopenexr=enabled \
+	-Dopenjpeg=enabled \
+	-Dopenslide=enabled \
+	-Dopenslide-module=enabled \
+	-Dorc=enabled \
+	-Dpangocairo=enabled \
+	-Dpdfium=disabled \
+	-Dpoppler=enabled \
+	-Dpoppler-module=enabled \
+	-Dquantizr=disabled \
+	-Draw=enabled \
+	-Drsvg=enabled \
+	-Dspng=%{__enabled_disabled libspng} \
+	-Dtiff=enabled \
+	-Duhdr=enabled \
+	-Dvapi=true \
+	-Dwebp=enabled \
+	-Dzlib=enabled
 
 %meson_build
 
@@ -303,10 +342,13 @@ rm -rf $RPM_BUILD_ROOT
 
 %meson_install
 
-# packaged as %doc in libvips-cpp8-apidocs
-%{__rm} -r $RPM_BUILD_ROOT%{_docdir}/vips-doc/html
+install -d $RPM_BUILD_ROOT%{_gidocdir}
+%{__mv} $RPM_BUILD_ROOT%{_docdir}/vips $RPM_BUILD_ROOT%{_gidocdir}
 
-%find_lang vips8.15 -o %{name}.lang
+# packaged as %doc in libvips-cpp8-apidocs
+%{__rm} -r $RPM_BUILD_ROOT%{_docdir}/vips-cpp/html
+
+%find_lang vips%{lib_ver} -o %{name}.lang
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -322,24 +364,34 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/vips
 %attr(755,root,root) %{_bindir}/vipsedit
 %attr(755,root,root) %{_bindir}/vipsheader
-%attr(755,root,root) %{_bindir}/vipsprofile
 %attr(755,root,root) %{_bindir}/vipsthumbnail
 %{_mandir}/man1/vips.1*
 %{_mandir}/man1/vipsedit.1*
 %{_mandir}/man1/vipsheader.1*
-%{_mandir}/man1/vipsprofile.1*
 %{_mandir}/man1/vipsthumbnail.1*
 
 %files -n libvips
 %defattr(644,root,root,755)
 %doc ChangeLog README.md
-%attr(755,root,root) %{_libdir}/libvips.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libvips.so.42
+%{_libdir}/libvips.so.*.*.*
+%ghost %{_libdir}/libvips.so.42
 %{_libdir}/girepository-1.0/Vips-8.0.typelib
+%dir %{_libdir}/vips-modules-%{lib_ver}
+# TODO: subpackages?
+# R: libheif
+%{_libdir}/vips-modules-%{lib_ver}/vips-heif.so
+# R: libjxl
+%{_libdir}/vips-modules-%{lib_ver}/vips-jxl.so
+# R: ImageMagick-libs
+%{_libdir}/vips-modules-%{lib_ver}/vips-magick.so
+# R: openslide
+%{_libdir}/vips-modules-%{lib_ver}/vips-openslide.so
+# R: poppler
+%{_libdir}/vips-modules-%{lib_ver}/vips-poppler.so
 
 %files -n libvips-devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libvips.so
+%{_libdir}/libvips.so
 %dir %{_includedir}/vips
 %{_includedir}/vips/almostdeprecated.h
 %{_includedir}/vips/arithmetic.h
@@ -403,16 +455,16 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -n libvips-apidocs
 %defattr(644,root,root,755)
-%{_gtkdocdir}/libvips
+%{_gidocdir}/vips
 
 %files -n libvips-cpp8
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libvips-cpp.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libvips-cpp.so.42
+%{_libdir}/libvips-cpp.so.*.*.*
+%ghost %{_libdir}/libvips-cpp.so.42
 
 %files -n libvips-cpp8-devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libvips-cpp.so
+%{_libdir}/libvips-cpp.so
 %{_includedir}/vips/VConnection8.h
 %{_includedir}/vips/VError8.h
 %{_includedir}/vips/VImage8.h
